@@ -2,12 +2,13 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.1.2' // For the shading task
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group = 'net.moonbyte.AnarchyUtils'
-version = '1.0-SNAPSHOT'
-sourceCompatibility = '1.8'
+version = plugin_version
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
 
 repositories {
     mavenCentral()
@@ -26,11 +27,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'io.papermc.paper:paper-api:1.20-R0.1-SNAPSHOT'
-    compileOnly 'me.clip:placeholderapi:2.10.9'
+    compileOnly("io.papermc.paper:paper-api:${paper_version}") {
+        exclude group: 'com.google.guava', module: 'guava'
+    }
+    compileOnly "me.clip:placeholderapi:${placeholderapi_version}"
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
@@ -45,14 +48,12 @@ jar {
     manifest {
         attributes 'Implementation-Title': 'AnarchyUtils',
                 'Implementation-Version': version,
-                'Main-Class': 'net.moonbyte.AnarchyUtils.Main' // Change to your main class
+                'Main-Class': 'net.moonbyte.AnarchyUtils.Main'
     }
 }
 
-// ShadowJar for shading the dependencies (like Maven Shade Plugin)
 shadowJar {
     archiveClassifier.set('')
-    relocate 'com.example', 'net.moonbyte.AnarchyUtils.relocated' // Change as needed
 }
 
 build.dependsOn shadowJar
