@@ -3,12 +3,14 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+     id 'maven-publish'
 }
 
 group = 'net.moonbyte.AnarchyUtils'
 version = plugin_version
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
     mavenCentral()
@@ -43,6 +45,31 @@ processResources {
         filter(ReplaceTokens, tokens: [version: version])
     }
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            groupId = 'net.moonbyte.AnarchyUtils'
+            artifactId = 'AnarchyUtils'
+            version = plugin_version
+            artifact tasks.shadowJar
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'moonbyte'
+            url = uri('https://maven.moonbyte.net/4b8t/anarchyutils')
+
+            credentials {
+                username = project.findProperty("repoUser") ?: "publisher"
+                password = project.findProperty("repoPassword") ?: "does_not_exist"
+            }
+        }
+    }
+}
+
 
 jar {
     manifest {
