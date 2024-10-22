@@ -8,7 +8,8 @@
 
 ## Reporting a Vulnerability
 
-To report a Vunerability, please contact one of the project maintainers via discord.
+To report a Vunerability, please contact one of the project maintainers via Discord.
+
 Project Maintainers :
 Main Project Maintainer : wolfieboy09
 Backup Project Maintainer : braydel
